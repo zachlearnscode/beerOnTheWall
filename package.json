@@ -1,0 +1,27 @@
+{
+  "name": "beeronthewall",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zachlearnscode/beerOnTheWall.git"
+  },
+  "author": "Zach and Deba",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zachlearnscode/beerOnTheWall/issues"
+  },
+  "homepage": "https://github.com/zachlearnscode/beerOnTheWall#readme",
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.1",
+    "vue": "^2.6.12",
+    "vue2-transitions": "^0.3.0",
+    "webpack": "^5.4.0",
+    "webpack-cli": "^4.2.0"
+  }
+}
