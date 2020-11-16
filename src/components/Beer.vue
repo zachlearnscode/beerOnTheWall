@@ -1,16 +1,43 @@
 <script>
+  import beerImage from "../assets/beer.png";
+
   export default {
     props: {
       full: {
         type: Boolean,
         default: true
+      },
+
+      order: {
+        type: Number,
+        default: 1
+      }
+    },
+
+    data() {
+      return {
+        beerImage: beerImage
       }
     },
   }
 </script>
 
 <template>
-  <span v-on:click="$emit('remove')" v-show="full">
-    <i class="fas fa-beer" style="font-size:30px"></i>
-  </span>
+  <zoom-center-transition mode="out-in">
+    <div :key="full" class="beer">
+      <img style="width: 30px;" :src="beerImage" v-if="full" v-on:click="$emit('remove')">
+      <template v-if="!full">
+        <div style="height: 100%; width: 100%; background: #ccc; border-radius: 100%; display: flex; align-items: center; justify-content: center;">
+          {{ order }}
+        </div>
+      </template>
+    </div>
+  </zoom-center-transition>
 </template>
+
+<style scoped>
+  .beer {
+    display: flex;
+    width: 50px;
+  }
+</style>
