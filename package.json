@@ -9,6 +9,9 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "express": "^4.17.1",
+    "nedb": "^1.8.0",
+    "nedb-promises": "^4.1.0",
     "vue": "^2.6.11"
   },
   "devDependencies": {
