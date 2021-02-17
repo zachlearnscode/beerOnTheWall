@@ -5,7 +5,7 @@
 
     methods: {
       sortBeers() {
-        let beersFiltered = this.beers.slice().filter(b => b.name);
+        let beersFiltered = this.beers.filter(b => b.name);
         
         beersFiltered.sort((a, b) => {
           let nameA = a.name.toUpperCase();
@@ -30,7 +30,7 @@
         let result = [];
         let claimedBeers = this.sortBeers();
 
-        let drinker = claimedBeers[0].name, count = 1;
+        let drinker = claimedBeers[0]?.name, count = 1;
         for (let b = 1; b < claimedBeers.length; b++) {
           if (claimedBeers[b].name === drinker) {
             count++;
