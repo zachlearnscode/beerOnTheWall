@@ -8,10 +8,11 @@
         default: true
       },
 
-      order: {
-        type: Number,
-        default: 1
-      }
+      name: {},
+
+      beerName: {},
+
+      date: {}
     },
 
     data() {
@@ -19,17 +20,29 @@
         beerImage: beerImage
       }
     },
+
+    computed: {
+      tooltip() {
+        // TODO: make these tooltips less lame
+        if (this.full) {
+          return "Drink this beer!";
+        }
+
+        return `${this.name} - ${this.beerName} - ${this.date}`;
+      }
+    },
   }
 </script>
 
 <template>
   <zoom-center-transition mode="out-in">
-    <div :key="full" class="beer">
+    <div :key="full" class="beer" :title="tooltip">
       <span
         :class="{
           'drank': !full
         }"
         style="font-size: 50px;"
+        :style="full ? 'cursor: pointer;' : ''"
         v-on:click="$emit('drink')"
       >
         🍺

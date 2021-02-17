@@ -5,12 +5,14 @@
     - sweet animationy thing when all beers are drank
   */
   import Beer from './components/Beer.vue'
+  import Leaderboard from './components/Leaderboard.vue'
 
   export default {
     name: 'App',
 
     components: {
-      "beer": Beer
+      "beer": Beer,
+      "leaderboard": Leaderboard,
     },
 
     filters: {
@@ -35,10 +37,7 @@
 
     data() {
       return {
-        beers: new Array(99)
-          .fill("")
-          .map(() => { return {full: true}; }),
-
+        beers: [],
         dialog: false,
         name: "",
         beerName: "",
@@ -55,16 +54,53 @@
 
     methods: {
       drinkBeer: function(index) {
+        if (!this.beers[index].full) {
+          return;
+        }
+
         this.selectedIndex = index;
         this.dialog = true;
       },
 
+      load() {
+        fetch("http://localhost:80/beer")
+          .then(response => response.json())
+          .then(response => {
+            this.beers = response.beers.map(b => {
+              return {
+                ...b,
+                full: !b.date
+              };
+            });
+          });
+      },
+
       save() {
+        fetch("http://localhost:80/beer", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            index: this.selectedIndex,
+            name: this.name,
+            beerName: this.beerName
+          })
+        });
+
         this.dialog = false;
 
-        this.beers[this.selectedIndex].full = false;
+        this.$set(this.beers, this.selectedIndex, {
+          name: this.name,
+          beerName: this.beerName,
+          full: false,
+        });
       }
     },
+
+    mounted() {
+      this.load();
+    }
   };
 </script>
 
@@ -82,6 +118,8 @@
 
     <v-main>
       <div>
+        <leaderboard :beers="beers"></leaderboard>
+
         <div style="display: flex; flex-wrap: wrap;">
           <beer
             v-for="(beer, i) in beers"
@@ -127,6 +165,7 @@
           <v-btn
             color="primary"
             @click="save"
+            :disabled="name.trim().length == 0 || beerName.trim().length == 0"
           >
             Save
           </v-btn>
