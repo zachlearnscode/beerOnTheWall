@@ -27,23 +27,29 @@
 
     computed: {
       leaderboard() {
+        console.log("Leaderboard called")
         let result = [];
         let claimedBeers = this.sortBeers();
+        console.log(claimedBeers)
 
         //What is this question mark sorcery?
         let drinker = claimedBeers[0]?.name, count = 1;
+        
         for (let b = 1; b < claimedBeers.length; b++) {
           if (claimedBeers[b].name === drinker) {
             count++;
+            if (b === claimedBeers.length - 1) {
+              result.push({drinker, count});
+            }
           } else {
-            result.push({drinker, count})
+            result.push({drinker, count});
             drinker = claimedBeers[b].name;
             count = 1;
           }
         }
 
         result.sort((a, b) => b.count - a.count)
-
+ 
         return result;
       }
     }
@@ -54,7 +60,7 @@
 <template>
   <div class="wrapper">
     <div class="ticker">
-      <div class="ticker-item" v-for="(drinker, i) in leaderboard" :key="i">
+      <div class="ticker-item" v-for="(drinker, i) in leaderboard" :key="drinker.drinker">
         {{i + 1}}. {{ drinker.drinker }}: {{ drinker.count }}
       </div>
     </div>

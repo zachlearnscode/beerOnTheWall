@@ -117,8 +117,9 @@
     </v-app-bar>
 
     <v-main>
-      <div>
-        <leaderboard :beers="beers"></leaderboard>
+      <leaderboard :beers="beers"></leaderboard>
+
+        
 
         <div style="display: flex; flex-wrap: wrap;">
           <beer
@@ -128,7 +129,7 @@
             v-on:drink="drinkBeer(i)"
           ></beer>
         </div>
-      </div>
+
     </v-main>
 
     <v-dialog v-model="dialog" max-width="600">
