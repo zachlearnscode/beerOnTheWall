@@ -30,6 +30,7 @@
         let result = [];
         let claimedBeers = this.sortBeers();
 
+        //What is this question mark sorcery?
         let drinker = claimedBeers[0]?.name, count = 1;
         for (let b = 1; b < claimedBeers.length; b++) {
           if (claimedBeers[b].name === drinker) {
@@ -51,14 +52,46 @@
 </script>
 
 <template>
-  <div>
-    <div>
-      Leaderboard:
-    </div>
-    <div v-for="(drinker, i) in leaderboard" :key="i">
-      <div>
-        <span>{{ drinker.drinker }}: </span><span>{{ drinker.count }}</span>
+  <div class="wrapper">
+    <div class="ticker">
+      <div class="ticker-item" v-for="(drinker, i) in leaderboard" :key="i">
+        {{i + 1}}. {{ drinker.drinker }}: {{ drinker.count }}
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+ .wrapper {
+    width: 100%;
+    overflow: hidden;
+    padding-left: 100%;
+    box-sizing: content-box; 
+  }
+  .ticker {
+    display: inline-block;
+    height: 4rem;
+    white-space: nowrap;
+    padding-right: 100%;
+    box-sizing: content-box;
+    animation: ticker;
+    animation-duration: 30s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+  .ticker-item {
+    display: inline-block;
+    padding: 0 2rem;
+    font-size: 2rem;
+  }
+  @keyframes ticker {
+    0% {
+      transform: translate3d(0, 0, 0);
+      visibility: visible;
+    }
+
+    100% {
+      transform: translate3d(-100%, 0, 0);
+    }
+  }
+</style>
