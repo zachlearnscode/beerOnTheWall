@@ -1,5 +1,4 @@
 <script>
-  // TODO: make this better
   export default {
     props: ["beers"],
 
@@ -27,10 +26,8 @@
 
     computed: {
       leaderboard() {
-        console.log("Leaderboard called")
         let result = [];
         let claimedBeers = this.sortBeers();
-        console.log(claimedBeers)
 
         //What is this question mark sorcery?
         let drinker = claimedBeers[0]?.name, count = 1;
@@ -38,9 +35,6 @@
         for (let b = 1; b < claimedBeers.length; b++) {
           if (claimedBeers[b].name === drinker) {
             count++;
-            if (b === claimedBeers.length - 1) {
-              result.push({drinker, count});
-            }
           } else {
             result.push({drinker, count});
             drinker = claimedBeers[b].name;
@@ -48,12 +42,13 @@
           }
         }
 
+        result.push({drinker, count});
+
         result.sort((a, b) => b.count - a.count)
  
         return result;
       }
     }
-
   };
 </script>
 
