@@ -5,14 +5,13 @@
     - sweet animationy thing when all beers are drank
   */
 import Beer from "./components/Beer.vue";
-import Leaderboard from "./components/Leaderboard.vue";
 
 export default {
   name: "App",
 
   components: {
     beer: Beer,
-    leaderboard: Leaderboard,
+    leaderboard: require("./components/Leaderboard.vue").default,
   },
 
   filters: {
@@ -121,7 +120,9 @@ export default {
 <template>
   <v-app>
     <v-app-bar app color="primary" dark>
-      <h1>{{ fullBeers.length }} Bottles of Beers on the Wall</h1>
+      <div class="headline">
+        {{ fullBeers.length }} Bottles of Beers on the Wall
+      </div>
     </v-app-bar>
 
     <v-main>
@@ -159,7 +160,7 @@ export default {
 
     <v-dialog v-model="dialog" max-width="600">
       <v-card>
-        <v-card-title class="headline">
+        <v-card-title class="headline" style="word-break: break-word;">
           You knocked the {{ fullBeers.length | suffixify }} beer off the wall!
         </v-card-title>
 

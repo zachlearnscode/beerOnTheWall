@@ -64,7 +64,7 @@
 
 <style scoped>
  .wrapper {
-    width: 100%;
+    max-width: 100vw;
     overflow: hidden;
     padding-left: 100%;
     box-sizing: content-box; 
@@ -76,7 +76,7 @@
     padding-right: 100%;
     box-sizing: content-box;
     animation: ticker;
-    animation-duration: 30s;
+    animation-duration: 10s;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
   }
@@ -92,7 +92,7 @@
     }
 
     100% {
-      transform: translate3d(-100%, 0, 0);
+      transform: translate3d(-200%, 0, 0);
     }
   }
 </style>
