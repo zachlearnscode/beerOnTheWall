@@ -1,135 +1,160 @@
 <script>
-  /*
+/*
     TODO
     - upload picture of beer
     - sweet animationy thing when all beers are drank
   */
-  import Beer from './components/Beer.vue'
-  import Leaderboard from './components/Leaderboard.vue'
+import Beer from "./components/Beer.vue";
+import Leaderboard from "./components/Leaderboard.vue";
 
-  export default {
-    name: 'App',
+export default {
+  name: "App",
 
-    components: {
-      "beer": Beer,
-      "leaderboard": Leaderboard,
-    },
+  components: {
+    beer: Beer,
+    leaderboard: Leaderboard,
+  },
 
-    filters: {
-      suffixify(n) {
-        let suffix = "th";
+  filters: {
+    suffixify(n) {
+      let suffix = "th";
 
-        let lastDigit = Number(String(n).substr(-1));
+      let lastDigit = Number(String(n).substr(-1));
 
-        if (n < 4 || n > 20) {
-          if (lastDigit == 1) {
-            suffix = "st";
-          } else if (lastDigit == 2) {
-            suffix = "nd";
-          } else if (lastDigit == 3) {
-            suffix = "rd";
-          }
+      if (n < 4 || n > 20) {
+        if (lastDigit == 1) {
+          suffix = "st";
+        } else if (lastDigit == 2) {
+          suffix = "nd";
+        } else if (lastDigit == 3) {
+          suffix = "rd";
         }
-
-        return n + suffix;
       }
+
+      return n + suffix;
+    },
+  },
+
+  data() {
+    return {
+      beers: [],
+      dialog: false,
+      name: "",
+      beerName: "",
+
+      selectedIndex: undefined,
+      loading: false,
+    };
+  },
+
+  computed: {
+    fullBeers: function () {
+      return this.beers.filter((b) => b.full);
+    },
+  },
+
+  watch: {
+    name() {
+      localStorage.setItem("name", this.name);
+    }
+  },
+  
+  methods: {
+    drinkBeer: function (index) {
+      if (!this.beers[index].full) {
+        return;
+      }
+
+      this.selectedIndex = index;
+      this.dialog = true;
     },
 
-    data() {
-      return {
-        beers: [],
-        dialog: false,
-        name: "",
-        beerName: "",
-
-        selectedIndex: undefined,
-      };
-    },
-
-     computed: {
-      fullBeers: function() {
-        return this.beers.filter(b => b.full);
-      },
-    },
-
-    methods: {
-      drinkBeer: function(index) {
-        if (!this.beers[index].full) {
-          return;
-        }
-
-        this.selectedIndex = index;
-        this.dialog = true;
-      },
-
-      load() {
-        fetch("http://localhost:80/beer")
-          .then(response => response.json())
-          .then(response => {
-            this.beers = response.beers.map(b => {
-              return {
-                ...b,
-                full: !b.date
-              };
-            });
+    load() {
+      this.loading = true;
+      fetch("http://localhost:80/beer")
+        .then((response) => response.json())
+        .then((response) => {
+          this.beers = response.beers.map((b) => {
+            return {
+              ...b,
+              full: !b.date,
+            };
           });
-      },
+        })
+        .then(() => {
+          return new Promise((r) => setTimeout(r, 750));
+        })
+        .finally(() => (this.loading = false));
+    },
 
-      save() {
-        fetch("http://localhost:80/beer", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            index: this.selectedIndex,
-            name: this.name,
-            beerName: this.beerName
-          })
-        });
-
-        this.dialog = false;
-
-        this.$set(this.beers, this.selectedIndex, {
+    save() {
+      fetch("http://localhost:80/beer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          index: this.selectedIndex,
           name: this.name,
           beerName: this.beerName,
-          full: false,
-        });
-      }
-    },
+        }),
+      });
 
-    mounted() {
-      this.load();
-    }
-  };
+      this.dialog = false;
+      this.beerName = "";
+
+      this.$set(this.beers, this.selectedIndex, {
+        name: this.name,
+        beerName: this.beerName,
+        full: false,
+      });
+    },
+  },
+
+  beforeMount() {
+    this.name = localStorage.getItem("name") || "";
+    this.load();
+  },
+};
 </script>
 
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <h1>
-        {{fullBeers.length}} Bottles of Beers on the Wall
-      </h1>
+    <v-app-bar app color="primary" dark>
+      <h1>{{ fullBeers.length }} Bottles of Beers on the Wall</h1>
     </v-app-bar>
 
     <v-main>
-      <leaderboard :beers="beers"></leaderboard>
+      <v-fade-transition mode="out-in">
+        <div :key="loading">
+          <div
+            v-if="loading"
+            class="d-flex justify-center align-center"
+            style="height: 90vh"
+          >
+            <v-progress-circular
+              indeterminate
+              color="primary"
+              size="100"
+              width="15"
+            >
+            </v-progress-circular>
+          </div>
 
-        
+          <template v-else>
+            <leaderboard :beers="beers"></leaderboard>
 
-        <div style="display: flex; flex-wrap: wrap;">
-          <beer
-            v-for="(beer, i) in beers"
-            :key="i"
-            v-bind="beer"
-            v-on:drink="drinkBeer(i)"
-          ></beer>
+            <div style="display: flex; flex-wrap: wrap">
+              <beer
+                v-for="(beer, i) in beers"
+                :key="i"
+                v-bind="beer"
+                v-on:drink="drinkBeer(i)"
+              ></beer>
+            </div>
+          </template>
         </div>
-
+      </v-fade-transition>
     </v-main>
 
     <v-dialog v-model="dialog" max-width="600">
@@ -155,13 +180,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn
-            color="error"
-            text
-            @click="dialog = false"
-          >
-            Cancel
-          </v-btn>
+          <v-btn color="error" text @click="dialog = false"> Cancel </v-btn>
 
           <v-btn
             color="primary"
