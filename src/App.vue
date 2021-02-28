@@ -145,7 +145,7 @@ export default {
           <template v-else>
             <leaderboard :beers="beers"></leaderboard>
 
-            <div style="display: flex; flex-wrap: wrap">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-evenly;">
               <beer
                 v-for="(beer, i) in beers"
                 :key="i"
