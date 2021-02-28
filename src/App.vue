@@ -71,7 +71,7 @@ export default {
 
     load() {
       this.loading = true;
-      fetch("http://localhost:80/beer")
+      fetch("https://ryandeba.com/beer") // TODO: this should be based on the environment...
         .then((response) => response.json())
         .then((response) => {
           this.beers = response.beers.map((b) => {
@@ -88,7 +88,7 @@ export default {
     },
 
     save() {
-      fetch("http://localhost:80/beer", {
+      fetch("https://ryandeba.com/beer", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
