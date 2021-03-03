@@ -1,7 +1,14 @@
 <script>
+  import moment from 'moment';
   import beerImage from "../assets/beer.png";
 
   export default {
+    filters: {
+      friendlyDate(date) {
+        return new moment(date).fromNow();
+      }
+    },
+
     props: {
       full: {
         type: Boolean,
@@ -20,34 +27,37 @@
         beerImage: beerImage
       }
     },
-
-    computed: {
-      tooltip() {
-        // TODO: make these tooltips less lame
-        if (this.full) {
-          return "Drink this beer!";
-        }
-
-        return `${this.name} - ${this.beerName} - ${this.date}`;
-      }
-    },
   }
 </script>
 
 <template>
   <zoom-center-transition mode="out-in">
-    <div :key="full" class="beer" :title="tooltip">
-      <span
-        :class="{
-          'drank': !full
-        }"
-        style="font-size: 50px;"
-        :style="full ? 'cursor: pointer;' : ''"
-        v-on:click="$emit('drink')"
-      >
-        🍺
+    <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
+        <div :key="full" class="beer" v-bind="attrs" v-on="on">
+          <span
+            :class="{
+              'drank': !full
+            }"
+            style="font-size: 50px;"
+            :style="full ? 'cursor: pointer;' : ''"
+            v-on:click="$emit('drink')"
+          >
+            🍺
+          </span>
+        </div>
+      </template>
+
+      <span>
+        <template v-if="full">
+          Drink this beer!
+        </template>
+
+        <template v-else>
+          <strong>{{ name }}</strong> drank <strong>{{ beerName }}</strong> {{ date | friendlyDate }}
+        </template>
       </span>
-    </div>
+    </v-tooltip>
   </zoom-center-transition>
 </template>
 
