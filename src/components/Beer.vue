@@ -24,17 +24,22 @@
 
     data() {
       return {
-        beerImage: beerImage
+        beerImage: beerImage,
+        mobileTooltip: false
       }
-    },
+    }
   }
 </script>
 
 <template>
   <zoom-center-transition mode="out-in">
-    <v-tooltip top>
+    <v-tooltip top v-model="mobileTooltip">
       <template v-slot:activator="{ on, attrs }">
-        <div :key="full" class="beer" v-bind="attrs" v-on="on">
+        <div :key="full" class="beer" v-bind="attrs" v-on="on"
+          v-touch="{
+            right: () => mobileTooltip = !mobileTooltip,
+          }"
+        >
           <span
             :class="{
               'drank': !full
