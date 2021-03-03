@@ -2,6 +2,12 @@
   export default {
     props: ["beers"],
 
+    data() {
+      return {
+        opened: false
+      };
+    },
+
     methods: {
       sortBeers() {
         let beersFiltered = this.beers.filter(b => b.name);
@@ -53,46 +59,70 @@
 </script>
 
 <template>
-  <div class="wrapper">
-    <div class="ticker">
-      <div class="ticker-item" v-for="(drinker, i) in leaderboard" :key="drinker.drinker">
-        {{i + 1}}. {{ drinker.drinker }}: {{ drinker.count }}
-      </div>
+  <div v-if="leaderboard.length > 0">
+    <v-simple-table>
+      <thead>
+        <tr>
+          <th style="width: 1px;"></th>
+          <th>Name</th>
+          <th class="text-center">Beers</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr v-for="(drinker, i) in leaderboard.slice(0, 3)" :key="drinker.drinker">
+          <td>{{ i + 1 }}</td>
+          <td>{{ drinker.drinker }}</td>
+          <td class="text-center">{{ drinker.count }}</td>
+        </tr>
+      </tbody>
+    </v-simple-table>
+
+    <div class="text-center" v-if="leaderboard.length > 3">
+      <v-btn color="primary" v-on:click="opened = true">More</v-btn>
     </div>
+
+    <v-dialog
+      v-model="opened"
+      max-width="800"
+    >
+      <v-card>
+        <v-card-title class="headline grey lighten-2">
+          Leaderboard
+        </v-card-title>
+
+        <v-card-text>
+          <v-simple-table>
+            <thead>
+              <tr>
+                <th style="width: 1px;"></th>
+                <th>Name</th>
+                <th class="text-center">Beers</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr v-for="(drinker, i) in leaderboard" :key="drinker.drinker">
+                <td>{{ i + 1 }}</td>
+                <td>{{ drinker.drinker }}</td>
+                <td class="text-center">{{ drinker.count }}</td>
+              </tr>
+            </tbody>
+          </v-simple-table>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            @click="opened = false"
+          >
+            Close
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
-
-<style scoped>
- .wrapper {
-    max-width: 100vw;
-    overflow: hidden;
-    padding-left: 100%;
-    box-sizing: content-box; 
-  }
-  .ticker {
-    display: inline-block;
-    height: 4rem;
-    white-space: nowrap;
-    padding-right: 100%;
-    box-sizing: content-box;
-    animation: ticker;
-    animation-duration: 10s;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-  }
-  .ticker-item {
-    display: inline-block;
-    padding: 0 2rem;
-    font-size: 2rem;
-  }
-  @keyframes ticker {
-    0% {
-      transform: translate3d(0, 0, 0);
-      visibility: visible;
-    }
-
-    100% {
-      transform: translate3d(-200%, 0, 0);
-    }
-  }
-</style>
