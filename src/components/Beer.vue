@@ -32,36 +32,34 @@
 </script>
 
 <template>
-  <zoom-center-transition mode="out-in">
-    <v-tooltip top v-model="mobileTooltip">
-      <template v-slot:activator="{ on, attrs }">
-        <div :key="full" class="beer" v-bind="attrs" v-on="on" v-touch="{
-          right: () => mobileTooltip = !mobileTooltip
-        }">
-          <span
-            :class="{
-              'drank': !full
-            }"
-            style="font-size: 50px;"
-            :style="full ? 'cursor: pointer;' : ''"
-            v-on:click="$emit('drink')"
-          >
-            🍺
-          </span>
-        </div>
+  <v-tooltip top v-model="mobileTooltip" z-index="1">
+    <template v-slot:activator="{ on, attrs }">
+      <div class="beer" v-bind="attrs" v-on="on" v-touch="{
+        right: () => mobileTooltip = !mobileTooltip
+      }">
+        <span
+          :class="{
+            'drank': !full
+          }"
+          style="font-size: 50px;"
+          :style="full ? 'cursor: pointer;' : ''"
+          v-on:click="$emit('drink')"
+        >
+          🍺
+        </span>
+      </div>
+    </template>
+
+    <span>
+      <template v-if="full">
+        Drink this beer!
       </template>
 
-      <span>
-        <template v-if="full">
-          Drink this beer!
-        </template>
-
-        <template v-else>
-          <strong>{{ name }}</strong> drank <strong>{{ beerName }}</strong> {{ date | friendlyDate }}
-        </template>
-      </span>
-    </v-tooltip>
-  </zoom-center-transition>
+      <template v-else>
+        <strong>{{ name }}</strong> drank <strong>{{ beerName }}</strong> {{ date | friendlyDate }}
+      </template>
+    </span>
+  </v-tooltip>
 </template>
 
 <style scoped>
