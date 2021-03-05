@@ -11,24 +11,28 @@ export default {
 
   methods: {
     remove(index) {
-      if (process?.env?.NODE_ENV === "development") {
-        let data = localStorage.getItem("wal");
-        data = JSON.parse(data);
-        data = arr.splice(index, 1);
-        localStorage.setItem("walls", data);
-      } else {
-        fetch("https://ryandeba.com/beer", {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            index: index,
-          }),
-        }).then(() => {
+      Promise.resolve()
+        .then(() => {
+          if (process?.env?.NODE_ENV === "development") {
+            let data = localStorage.getItem("wall");
+            data = JSON.parse(data);
+            data[index] = {};
+            localStorage.setItem("wall", JSON.stringify(data));
+          } else {
+            fetch("https://ryandeba.com/beer", {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                index: index,
+              }),
+            });
+          }
+        })
+        .then(() => {
           this.$emit("data-changed");
         });
-      }
     },
   },
 
