@@ -49,7 +49,7 @@
 
         <v-card-text>
           <div
-            v-for="(beer, index) in beers"
+            v-for="(beer, index) in beers.filter(b => !b.full)"
             :key="index"
             class="pa-3 d-flex"
           >
@@ -61,7 +61,7 @@
             >
               <v-icon>mdi-delete</v-icon>
             </v-btn>
-
+      
             {{ index }}
             {{ beer }}
           </div>
