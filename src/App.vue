@@ -12,6 +12,7 @@ export default {
   components: {
     beer: Beer,
     leaderboard: require("./components/Leaderboard.vue").default,
+    admin: require("./components/Admin.vue").default,
   },
 
   filters: {
@@ -223,5 +224,7 @@ export default {
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <admin :beers="beers" v-on:data-changed="load"></admin>
   </v-app>
 </template>
