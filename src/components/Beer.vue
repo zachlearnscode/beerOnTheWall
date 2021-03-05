@@ -1,47 +1,44 @@
 <script>
-  import moment from 'moment';
-  import beerImage from "../assets/beer.png";
+import moment from "moment";
+import beerImage from "../assets/beer.png";
 
-  export default {
-    filters: {
-      friendlyDate(date) {
-        return new moment(date).fromNow();
-      }
+export default {
+  filters: {
+    friendlyDate(date) {
+      return new moment(date).fromNow();
+    },
+  },
+
+  props: {
+    full: {
+      type: Boolean,
+      default: true,
     },
 
-    props: {
-      full: {
-        type: Boolean,
-        default: true
-      },
+    name: {},
 
-      name: {},
+    beerName: {},
 
-      beerName: {},
+    date: {},
+  },
 
-      date: {}
-    },
-
-    data() {
-      return {
-        beerImage: beerImage,
-        mobileTooltip: false
-      }
-    },
-  }
+  data() {
+    return {
+      beerImage: beerImage,
+    };
+  },
+};
 </script>
 
 <template>
   <v-tooltip top v-model="mobileTooltip" z-index="1">
     <template v-slot:activator="{ on, attrs }">
-      <div class="beer" v-bind="attrs" v-on="on" v-touch="{
-        right: () => mobileTooltip = !mobileTooltip
-      }">
+      <div class="beer" v-bind="attrs" v-on="on">
         <span
           :class="{
-            'drank': !full
+            drank: !full,
           }"
-          style="font-size: 50px;"
+          style="font-size: 50px"
           :style="full ? 'cursor: pointer;' : ''"
           v-on:click="$emit('drink')"
         >
@@ -51,25 +48,24 @@
     </template>
 
     <span>
-      <template v-if="full">
-        Drink this beer!
-      </template>
+      <template v-if="full"> Drink this beer! </template>
 
       <template v-else>
-        <strong>{{ name }}</strong> drank <strong>{{ beerName }}</strong> {{ date | friendlyDate }}
+        <strong>{{ name }}</strong> drank <strong>{{ beerName }}</strong>
+        {{ date | friendlyDate }}
       </template>
     </span>
   </v-tooltip>
 </template>
 
 <style scoped>
-  .beer {
-    display: flex;
-    width: 50px;
-    margin: 16px;
-  }
+.beer {
+  display: flex;
+  width: 50px;
+  margin: 16px;
+}
 
-  .drank {
-    filter: grayscale(1);
-  }
+.drank {
+  filter: grayscale(1);
+}
 </style>
