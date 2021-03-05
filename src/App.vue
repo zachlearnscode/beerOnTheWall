@@ -43,6 +43,7 @@ export default {
 
       selectedIndex: undefined,
       loading: false,
+      saving: false,
     };
   },
 
@@ -70,8 +71,24 @@ export default {
 
     load() {
       this.loading = true;
-      fetch("https://ryandeba.com/beer") // TODO: this should be based on the environment...
-        .then((response) => response.json())
+
+      return Promise.resolve()
+        .then(() => {
+          if (process?.env?.NODE_ENV === "development") {
+            var data = localStorage.getItem("wall");
+
+            data = data || JSON.stringify({
+              beers: new Array(99).fill({})
+            });
+
+            data = JSON.parse(data);
+
+            return data;
+          } else {
+            return fetch("https://ryandeba.com/beer")
+              .then((response) => response.json())
+          }
+        })
         .then((response) => {
           this.beers = response.beers.map((b) => {
             return {
@@ -87,26 +104,39 @@ export default {
     },
 
     save() {
-      fetch("https://ryandeba.com/beer", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          index: this.selectedIndex,
-          name: this.name,
-          beerName: this.beerName,
-        }),
-      });
-
+      this.saving = true;
       this.dialog = false;
-      this.beerName = "";
 
-      this.$set(this.beers, this.selectedIndex, {
-        name: this.name,
-        beerName: this.beerName,
-        full: false,
-      });
+      Promise.resolve()
+        .then(() => {
+          if (process?.env?.NODE_ENV === "development") {
+            this.$set(this.beers, this.selectedIndex, {
+              name: this.name,
+              beerName: this.beerName,
+              date: new Date().getTime()
+            });
+
+            localStorage.setItem("wall", JSON.stringify({beers: this.beers}));
+          } else {
+            return fetch("https://ryandeba.com/beer", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                index: this.selectedIndex,
+                name: this.name,
+                beerName: this.beerName,
+              }),
+            });
+          }
+        })
+        .then(this.load)
+        .finally(() => {
+          this.saving = false;
+        });
+
+      this.beerName = "";
     },
   },
 
@@ -127,9 +157,9 @@ export default {
 
     <v-main>
       <v-fade-transition mode="out-in">
-        <div :key="loading">
+        <div :key="loading + '_' + saving">
           <div
-            v-if="loading"
+            v-if="loading || saving"
             class="d-flex justify-center align-center"
             style="height: 90vh"
           >

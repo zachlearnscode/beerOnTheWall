@@ -48,7 +48,7 @@
           }
         }
 
-        result.push({drinker, count});
+        drinker && result.push({drinker, count});
 
         result.sort((a, b) => b.count - a.count)
  
