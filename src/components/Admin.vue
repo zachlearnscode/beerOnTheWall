@@ -16,7 +16,7 @@ export default {
           if (process?.env?.NODE_ENV === "development") {
             let data = localStorage.getItem("wall");
             data = JSON.parse(data);
-            data[index] = {};
+            data.beers[index] = {full: true};
             localStorage.setItem("wall", JSON.stringify(data));
           } else {
             fetch("https://ryandeba.com/beer", {
@@ -33,7 +33,7 @@ export default {
         .then(() => {
           this.$emit("data-changed");
         });
-    },
+    }
   },
 
   mounted() {
