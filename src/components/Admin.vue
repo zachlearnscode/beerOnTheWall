@@ -1,16 +1,22 @@
 <script>
-  export default {
-    props: ["beers"],
+export default {
+  props: ["beers"],
 
-    data() {
-      return {
-        dialog: false,
-        hidden: true
-      };
-    },
+  data() {
+    return {
+      dialog: false,
+      hidden: true,
+    };
+  },
 
-    methods: {
-      remove(index) {
+  methods: {
+    remove(index) {
+      if (process?.env?.NODE_ENV === "development") {
+        let data = localStorage.getItem("wal");
+        data = JSON.parse(data);
+        data = arr.splice(index, 1);
+        localStorage.setItem("walls", data);
+      } else {
         fetch("https://ryandeba.com/beer", {
           method: "DELETE",
           headers: {
@@ -19,19 +25,19 @@
           body: JSON.stringify({
             index: index,
           }),
-        })
-        .then(() => {
+        }).then(() => {
           this.$emit("data-changed");
         });
       }
     },
+  },
 
-    mounted() {
-      if (window.location.search.toLowerCase().indexOf("admin") > -1) {
-        this.hidden = false;
-      }
+  mounted() {
+    if (window.location.search.toLowerCase().indexOf("admin") > -1) {
+      this.hidden = false;
     }
-  };
+  },
+};
 </script>
 
 <template>
@@ -43,13 +49,11 @@
 
     <v-dialog v-model="dialog" max-width="600" scrollable>
       <v-card>
-        <v-card-title>
-          Admin
-        </v-card-title>
+        <v-card-title> Admin </v-card-title>
 
         <v-card-text>
           <div
-            v-for="(beer, index) in beers.filter(b => !b.full)"
+            v-for="(beer, index) in beers.filter((b) => !b.full)"
             :key="index"
             class="pa-3 d-flex"
           >
@@ -61,7 +65,7 @@
             >
               <v-icon>mdi-delete</v-icon>
             </v-btn>
-      
+
             {{ beers.indexOf(beer) }}
             {{ beer }}
           </div>
