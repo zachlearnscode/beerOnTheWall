@@ -57,12 +57,12 @@
               color="error"
               class="mr-2"
               icon
-              v-on:click="remove(index)"
+              v-on:click="remove(beers.indexOf(beer))"
             >
               <v-icon>mdi-delete</v-icon>
             </v-btn>
       
-            {{ index }}
+            {{ beers.indexOf(beer) }}
             {{ beer }}
           </div>
         </v-card-text>
