@@ -133,11 +133,12 @@ export default {
           }
         })
         .then(this.load)
+        .then(() => {
+          this.beerName = "";
+        })
         .finally(() => {
           this.saving = false;
         });
-
-      this.beerName = "";
     },
   },
 
