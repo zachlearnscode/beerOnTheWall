@@ -43,6 +43,7 @@ export default {
       beerName: "",
 
       selectedIndex: undefined,
+      autocomplete: [],
       loading: false,
       saving: false,
     };
@@ -52,14 +53,18 @@ export default {
     fullBeers: function () {
       return this.beers.filter((b) => b.full);
     },
+
+    populateAutocomplete() {
+      return this.beers.filter((b) => !b.full);
+    },
   },
 
   watch: {
     name() {
       localStorage.setItem("name", this.name);
-    }
+    },
   },
-  
+
   methods: {
     drinkBeer: function (index) {
       if (!this.beers[index].full) {
@@ -78,16 +83,19 @@ export default {
           if (process?.env?.NODE_ENV === "development") {
             var data = localStorage.getItem("wall");
 
-            data = data || JSON.stringify({
-              beers: new Array(99).fill({})
-            });
+            data =
+              data ||
+              JSON.stringify({
+                beers: new Array(99).fill({}),
+              });
 
             data = JSON.parse(data);
 
             return data;
           } else {
-            return fetch("https://ryandeba.com/beer")
-              .then((response) => response.json())
+            return fetch("https://ryandeba.com/beer").then((response) =>
+              response.json()
+            );
           }
         })
         .then((response) => {
@@ -114,10 +122,10 @@ export default {
             this.$set(this.beers, this.selectedIndex, {
               name: this.name,
               beerName: this.beerName,
-              date: new Date().getTime()
+              date: new Date().getTime(),
             });
-
-            localStorage.setItem("wall", JSON.stringify({beers: this.beers}));
+            console.log(this.beers);
+            localStorage.setItem("wall", JSON.stringify({ beers: this.beers }));
           } else {
             return fetch("https://ryandeba.com/beer", {
               method: "POST",
@@ -135,10 +143,9 @@ export default {
         .then(this.load)
         .finally(() => {
           this.saving = false;
+          this.beerName = "";
         });
-
-      this.beerName = "";
-    },
+    }
   },
 
   beforeMount() {
@@ -176,7 +183,13 @@ export default {
           <template v-else>
             <leaderboard :beers="beers"></leaderboard>
 
-            <div style="display: flex; flex-wrap: wrap; justify-content: space-evenly;">
+            <div
+              style="
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-evenly;
+              "
+            >
               <beer
                 v-for="(beer, i) in beers"
                 :key="i"
@@ -191,7 +204,7 @@ export default {
 
     <v-dialog v-model="dialog" max-width="600">
       <v-card>
-        <v-card-title class="headline" style="word-break: break-word;">
+        <v-card-title class="headline" style="word-break: break-word">
           You knocked the {{ fullBeers.length | suffixify }} beer off the wall!
         </v-card-title>
 

@@ -31,7 +31,7 @@ export default {
 </script>
 
 <template>
-  <v-tooltip top v-model="mobileTooltip" z-index="1">
+  <v-tooltip top z-index="1">
     <template v-slot:activator="{ on, attrs }">
       <div class="beer" v-bind="attrs" v-on="on">
         <span
