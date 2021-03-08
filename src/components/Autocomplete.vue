@@ -1,15 +1,27 @@
 <template>
   <div>
-    <v-text-field v-model="input"></v-text-field>
+    <v-text-field v-model="input" placeholder="Beer Name"></v-text-field>
+
     <v-list>
-      <v-list-item-group v-if="inputMatchesEntry">
-        <v-list-item v-for="suggestion in inputMatchesEntry" :key="suggestion">
-          <template v-if="suggestion">
-            {{ suggestion | makeProperNoun }}
-          </template>
-        </v-list-item>
-      </v-list-item-group>
+      <transition
+        enter-active-class="animate__animated animate__fadeIn animate__faster"
+        leave-active-class="animate__animated animate__fadeOut animate__faster"
+      >
+        <v-list-item-group v-if="suggestions">
+          <v-list-item
+            class="px-0"
+            v-for="suggestion in suggestions"
+            :key="suggestion"
+            @click="input = makeProperNoun(suggestion)"
+          >
+            <template v-if="suggestion">
+              {{ makeProperNoun(suggestion) }}
+            </template>
+          </v-list-item>
+        </v-list-item-group>
+      </transition>
     </v-list>
+
   </div>
 </template>
 
@@ -24,19 +36,23 @@ export default {
   },
 
   computed: {
-    inputMatchesEntry() {
+    suggestions() {
       if (this.input) {
         let input = this.input.trim().toLowerCase();
         return this.beersByName
           .map((b) => b.toLowerCase())
-          .filter((b) => b.includes(input));
+          .filter((b) => b.includes(input) && b !== input);
+        //.filter shows suggestions while b includes but !== input.
+        //This logical and has the effect of closing the suggestions box
+        //when user finishes inputting or chooses a suggestion, aka
+        //the suggestion is no longer necessary.
       } else {
         return null;
       }
     },
   },
 
-  filters: {
+  methods: {
     makeProperNoun(beerName) {
       let beerNameWords = beerName.split(" ");
 

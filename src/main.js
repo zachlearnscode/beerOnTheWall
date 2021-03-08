@@ -2,6 +2,9 @@ import Vue from 'vue'
 import App from './App.vue'
 import Transitions from 'vue2-transitions';
 import vuetify from './plugins/vuetify';
+import AnimateCSS from 'animate.css';
+
+Vue.use(AnimateCSS); 
 
 Vue.use(Transitions);
 
