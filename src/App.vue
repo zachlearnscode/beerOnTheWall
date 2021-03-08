@@ -5,6 +5,7 @@
     - sweet animationy thing when all beers are drank
   */
 import Beer from "./components/Beer.vue";
+import Autocomplete from "./components/Autocomplete.vue";
 
 export default {
   name: "App",
@@ -13,6 +14,7 @@ export default {
     beer: Beer,
     leaderboard: require("./components/Leaderboard.vue").default,
     admin: require("./components/Admin.vue").default,
+    autocomplete: Autocomplete
   },
 
   filters: {
@@ -54,8 +56,19 @@ export default {
       return this.beers.filter((b) => b.full);
     },
 
-    populateAutocomplete() {
-      return this.beers.filter((b) => !b.full);
+    beersByName() {
+      let result = [];
+
+      this.beers
+        .filter((b) => !b.full)
+        .map(b => b.beerName)
+        .forEach(b => {
+          if (!result.includes(b)) {
+            result.push(b);
+          }
+        });
+
+      return result;
     },
   },
 
@@ -220,6 +233,8 @@ export default {
             label="Beer Name"
             required
           ></v-text-field>
+
+          <autocomplete :beersByName="beersByName"> </autocomplete>
         </v-card-text>
 
         <v-card-actions>
