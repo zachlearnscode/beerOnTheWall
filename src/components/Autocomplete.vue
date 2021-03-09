@@ -3,31 +3,26 @@
     <v-text-field v-model="input" placeholder="Beer Name"></v-text-field>
 
     <v-list>
-      <transition
-        enter-active-class="animate__animated animate__fadeIn animate__faster"
-        leave-active-class="animate__animated animate__fadeOut animate__faster"
-      >
-        <v-list-item-group v-if="suggestions">
-          <v-list-item
-            class="px-0"
-            v-for="suggestion in suggestions"
-            :key="suggestion"
-            @click="input = makeProperNoun(suggestion)"
-          >
-            <template v-if="suggestion">
-              {{ makeProperNoun(suggestion) }}
-            </template>
-          </v-list-item>
-        </v-list-item-group>
-      </transition>
+      <v-list-item-group v-if="suggestions">
+        <v-list-item
+          class="px-0"
+          v-for="suggestion in suggestions"
+          :key="suggestion"
+          @click="input = makeProperNoun(suggestion)"
+          style="border-bottom: thin solid rgba(0, 0, 0, 0.12);"
+        >
+          <template>
+            {{ makeProperNoun(suggestion) }}
+          </template>
+        </v-list-item>
+      </v-list-item-group>
     </v-list>
-
   </div>
 </template>
 
 <script>
 export default {
-  props: ["beersByName"],
+  props: ["beersByName", "dialogOpen"],
 
   data() {
     return {
@@ -49,10 +44,25 @@ export default {
       } else {
         return null;
       }
+    }
+  },
+
+  watch: {
+    input: function() {
+      return this.$emit("beer-name-updated", this.input);
     },
+
+    //Clears input when dialog is cancelled
+    dialogOpen: function() {
+      if (!this.dialogOpen)  {
+        return this.input = '';
+      }
+    }
   },
 
   methods: {
+    //Capitalizes beer names after suggestions()
+    //makes everything lowecase for matching purposes
     makeProperNoun(beerName) {
       let beerNameWords = beerName.split(" ");
 
@@ -62,9 +72,6 @@ export default {
         })
         .join(" ");
     },
-  },
+  }
 };
 </script>
-
-<style>
-</style>

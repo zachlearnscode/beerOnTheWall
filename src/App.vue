@@ -14,7 +14,7 @@ export default {
     beer: Beer,
     leaderboard: require("./components/Leaderboard.vue").default,
     admin: require("./components/Admin.vue").default,
-    autocomplete: Autocomplete
+    autocomplete: Autocomplete,
   },
 
   filters: {
@@ -61,8 +61,8 @@ export default {
 
       this.beers
         .filter((b) => !b.full)
-        .map(b => b.beerName)
-        .forEach(b => {
+        .map((b) => b.beerName)
+        .forEach((b) => {
           if (!result.includes(b)) {
             result.push(b);
           }
@@ -86,6 +86,15 @@ export default {
 
       this.selectedIndex = index;
       this.dialog = true;
+    },
+
+    beerNameUpdated(input) {
+      return this.beerName = input;
+    },
+
+    closeDialog() {
+      this.dialog = false;
+      this.beerName = '';
     },
 
     load() {
@@ -126,6 +135,7 @@ export default {
     },
 
     save() {
+      let beerName = this.beerName
       this.saving = true;
       this.dialog = false;
 
@@ -134,7 +144,7 @@ export default {
           if (process?.env?.NODE_ENV === "development") {
             this.$set(this.beers, this.selectedIndex, {
               name: this.name,
-              beerName: this.beerName,
+              beerName: beerName,
               date: new Date().getTime(),
             });
             console.log(this.beers);
@@ -148,7 +158,7 @@ export default {
               body: JSON.stringify({
                 index: this.selectedIndex,
                 name: this.name,
-                beerName: this.beerName,
+                beerName: beerName,
               }),
             });
           }
@@ -158,7 +168,7 @@ export default {
           this.saving = false;
           this.beerName = "";
         });
-    }
+    },
   },
 
   beforeMount() {
@@ -215,7 +225,7 @@ export default {
       </v-fade-transition>
     </v-main>
 
-    <v-dialog v-model="dialog" max-width="600">
+    <v-dialog v-model="dialog" max-width="600" class="submitDialog">
       <v-card>
         <v-card-title class="headline" style="word-break: break-word">
           You knocked the {{ fullBeers.length | suffixify }} beer off the wall!
@@ -228,19 +238,13 @@ export default {
             required
           ></v-text-field>
 
-          <v-text-field
-            v-model="beerName"
-            label="Beer Name"
-            required
-          ></v-text-field>
-
-          <autocomplete :beersByName="beersByName"> </autocomplete>
+          <autocomplete :beersByName="beersByName" :dialogOpen="dialog" required @beer-name-updated="beerNameUpdated"> </autocomplete>
         </v-card-text>
 
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn color="error" text @click="dialog = false"> Cancel </v-btn>
+          <v-btn color="error" text @click="closeDialog"> Cancel </v-btn>
 
           <v-btn
             color="primary"
@@ -256,3 +260,9 @@ export default {
     <admin :beers="beers" v-on:data-changed="load"></admin>
   </v-app>
 </template>
+
+<style scoped>
+.submitDialog {
+  transition: all 1s ease;
+}
+</style>
