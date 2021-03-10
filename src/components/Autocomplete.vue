@@ -1,25 +1,26 @@
 <template>
   <div>
-    <v-text-field
-      required
-      v-model="input"
-      placeholder="Beer Name"
-    ></v-text-field>
+    <v-text-field required v-model="input" label="Beer Name"></v-text-field>
 
     <v-expand-transition mode="in-out">
       <v-list v-if="suggestions">
         <v-list-item-group>
-          <v-list-item
-            class="px-0"
-            v-for="suggestion in suggestions"
-            :key="suggestion"
-            @click="input = makeProperNoun(suggestion)"
-            style="border-bottom: thin solid rgba(0, 0, 0, 0.12)"
+          <transition-group
+            enter-active-class="animate__animated animate__fadeIn animate__faster"
+            leave-active-class="animate__animated animate__fadeOut animate__faster"
           >
-            <template>
-              {{ makeProperNoun(suggestion) }}
-            </template>
-          </v-list-item>
+            <v-list-item
+              class="px-0"
+              v-for="suggestion in suggestions"
+              :key="suggestion"
+              @click="input = makeProperNoun(suggestion)"
+              style="border-bottom: thin solid rgba(0, 0, 0, 0.12)"
+            >
+              <template>
+                {{ makeProperNoun(suggestion) }}
+              </template>
+            </v-list-item>
+          </transition-group>
         </v-list-item-group>
       </v-list>
     </v-expand-transition>
