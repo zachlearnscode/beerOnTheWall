@@ -1,22 +1,28 @@
 <template>
   <div>
-    <v-text-field v-model="input" placeholder="Beer Name"></v-text-field>
+    <v-text-field
+      required
+      v-model="input"
+      placeholder="Beer Name"
+    ></v-text-field>
 
-    <v-list>
-      <v-list-item-group v-if="suggestions">
-        <v-list-item
-          class="px-0"
-          v-for="suggestion in suggestions"
-          :key="suggestion"
-          @click="input = makeProperNoun(suggestion)"
-          style="border-bottom: thin solid rgba(0, 0, 0, 0.12);"
-        >
-          <template>
-            {{ makeProperNoun(suggestion) }}
-          </template>
-        </v-list-item>
-      </v-list-item-group>
-    </v-list>
+    <v-expand-transition mode="in-out">
+      <v-list v-if="suggestions">
+        <v-list-item-group>
+          <v-list-item
+            class="px-0"
+            v-for="suggestion in suggestions"
+            :key="suggestion"
+            @click="input = makeProperNoun(suggestion)"
+            style="border-bottom: thin solid rgba(0, 0, 0, 0.12)"
+          >
+            <template>
+              {{ makeProperNoun(suggestion) }}
+            </template>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-expand-transition>
   </div>
 </template>
 
@@ -44,20 +50,20 @@ export default {
       } else {
         return null;
       }
-    }
+    },
   },
 
   watch: {
-    input: function() {
+    input: function () {
       return this.$emit("beer-name-updated", this.input);
     },
 
     //Clears input when dialog is cancelled
-    dialogOpen: function() {
-      if (!this.dialogOpen)  {
-        return this.input = '';
+    dialogOpen: function () {
+      if (!this.dialogOpen) {
+        return (this.input = "");
       }
-    }
+    },
   },
 
   methods: {
@@ -72,6 +78,6 @@ export default {
         })
         .join(" ");
     },
-  }
+  },
 };
 </script>

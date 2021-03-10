@@ -238,7 +238,7 @@ export default {
             required
           ></v-text-field>
 
-          <autocomplete :beersByName="beersByName" :dialogOpen="dialog" required @beer-name-updated="beerNameUpdated"> </autocomplete>
+          <autocomplete :beersByName="beersByName" :dialogOpen="dialog" @beer-name-updated="beerNameUpdated"> </autocomplete>
         </v-card-text>
 
         <v-card-actions>
@@ -261,8 +261,8 @@ export default {
   </v-app>
 </template>
 
-<style scoped>
-.submitDialog {
-  transition: all 1s ease;
-}
+<style>
+  .submitDialog {
+    transition: all 1s ease;
+  }
 </style>
