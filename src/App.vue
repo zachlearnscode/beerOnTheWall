@@ -45,7 +45,6 @@ export default {
       beerName: "",
 
       selectedIndex: undefined,
-      autocomplete: [],
       loading: false,
       saving: false,
     };
@@ -86,10 +85,6 @@ export default {
 
       this.selectedIndex = index;
       this.dialog = true;
-    },
-
-    beerNameUpdated(input) {
-      return this.beerName = input;
     },
 
     closeDialog() {
@@ -135,7 +130,6 @@ export default {
     },
 
     save() {
-      let beerName = this.beerName
       this.saving = true;
       this.dialog = false;
 
@@ -144,7 +138,7 @@ export default {
           if (process?.env?.NODE_ENV === "development") {
             this.$set(this.beers, this.selectedIndex, {
               name: this.name,
-              beerName: beerName,
+              beerName: this.beerName,
               date: new Date().getTime(),
             });
             console.log(this.beers);
@@ -158,7 +152,7 @@ export default {
               body: JSON.stringify({
                 index: this.selectedIndex,
                 name: this.name,
-                beerName: beerName,
+                beerName: this.beerName,
               }),
             });
           }
@@ -238,7 +232,7 @@ export default {
             required
           ></v-text-field>
 
-          <autocomplete :beersByName="beersByName" :dialogOpen="dialog" @beer-name-updated="beerNameUpdated"> </autocomplete>
+          <autocomplete :beersByName="beersByName" v-model="beerName"> </autocomplete>
         </v-card-text>
 
         <v-card-actions>

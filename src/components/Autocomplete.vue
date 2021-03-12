@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-text-field required v-model="input" label="Beer Name"></v-text-field>
+    <v-text-field required v-model="input" label="Beer Name" autocomplete="off"></v-text-field>
 
     <v-expand-transition mode="in-out">
       <v-list v-if="suggestions">
@@ -29,11 +29,11 @@
 
 <script>
 export default {
-  props: ["beersByName", "dialogOpen"],
+  props: ["beersByName", "value"],
 
   data() {
     return {
-      input: "",
+      input: ""
     };
   },
 
@@ -55,16 +55,13 @@ export default {
   },
 
   watch: {
-    input: function () {
-      return this.$emit("beer-name-updated", this.input);
+    input: function() {
+      return this.$emit("input", this.input);
     },
 
-    //Clears input when dialog is cancelled
-    dialogOpen: function () {
-      if (!this.dialogOpen) {
-        return (this.input = "");
-      }
-    },
+    value: function() {
+      this.input = this.value;
+    }
   },
 
   methods: {
